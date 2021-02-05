@@ -8,7 +8,6 @@ library(data.table)
 library(corrgram)
 
 #dataFile <- "britney-dziela_zebrane.txt"
-
 dataFile_15_8k <- "music_data_2021-02-04.txt"
 
 # loading music data
@@ -19,13 +18,14 @@ dataFile_15_8k <- "music_data_2021-02-04.txt"
   dataMusicRaw <- as.data.frame(dataRaw)
   dataMusic <- fread(text = unlist(dataMusicRaw))
 
-  #dataMusic <- read.table(text = dataMusicRaw[,], header = FALSE, sep = ",")
-  colnames(dataMusic) <- c("name","album","artist","id","release_date","popularity","length","danceability","acousticness","energy","instrumentalness",
-                     "liveness","valence","loudness","speechiness","tempo","key","time_signature", "mode")
-
+  colnames(dataMusic) <- c("name","album","artist","id","release_date","popularity",
+                           "length","danceability","acousticness","energy",
+                           "instrumentalness","liveness","valence","loudness",
+                           "speechiness","tempo","key","time_signature", "mode")
   
 # data of interest
-  doi <- dataMusic[,c("danceability","acousticness","energy","loudness","valence","tempo","key","time_signature","mode")]
+  doi <- dataMusic[,c("danceability","acousticness","energy","loudness","valence",
+                      "tempo","key","time_signature","mode")]
   doi <- data.frame(lapply(doi, as.numeric))
 
   doi$diagnosis <- rep(0, dim(doi)[1])
@@ -34,7 +34,6 @@ dataFile_15_8k <- "music_data_2021-02-04.txt"
 
   head(doi)
   summary(doi$Diagnosis)
-
 
 # visual analysis
   
@@ -45,9 +44,12 @@ dataFile_15_8k <- "music_data_2021-02-04.txt"
   
 # groups  
   
+  indexTrain <- createDataPartition(doi$danceability, p=0.7, list=FALSE)
   
+  training <- doi[indexTrain,]
+  testing <- doi[-indexTrain,]
   
-  
+# training model
   
   
   
@@ -70,6 +72,9 @@ dataFile_15_8k <- "music_data_2021-02-04.txt"
 
 # dobry typo:
 #   https://github.com/cristobalvch/Spotify-Machine-Learning/blob/master/clustering.R
+  
+# filmik jak zaczac w caret
+#   https://www.youtube.com/watch?v=aBo6rngw1tU&list=WL&index=10&ab_channel=DataCamp
 
 # spotipy documentation:
 #   https://spotipy.readthedocs.io/en/2.16.1/
